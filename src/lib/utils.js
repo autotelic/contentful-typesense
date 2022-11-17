@@ -1,5 +1,3 @@
-// export const defaultFieldFormatter = value => value
-
 export const fieldFormatters = {
   'Location': value => Object.values(value).reverse(),
   'Date': value => Date.parse(value) / 1000
