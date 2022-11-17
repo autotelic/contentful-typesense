@@ -1,0 +1,27 @@
+{
+  "name": "contentful-typesense",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "c8 --100 ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/autotelic/contentful-typesense.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/autotelic/contentful-typesense/issues"
+  },
+  "homepage": "https://github.com/autotelic/contentful-typesense#readme",
+  "devDependencies": {
+    "ava": "^5.1.0",
+    "c8": "^7.12.0",
+    "chai": "^4.3.7",
+    "sinon": "^14.0.2"
+  }
+}
