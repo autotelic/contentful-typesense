@@ -1,22 +1,22 @@
 export const createDocument = async ({
   entryId,
-  collectionFields,
+  schemaFields,
   fields,
   fieldTypes,
   locale,
-  fieldMappers,
+  fieldMappings,
   fieldFormatters,
   fieldMappersExtraArgs = []
 }) => {
   const defaultFieldFormatter = value => value
   return {
     id: entryId,
-    ...await collectionFields.reduce(async (documentFields, schemaField) => {
+    ...await schemaFields.reduce(async (documentFields, schemaField) => {
       const { name } = schemaField
-      if (fieldMappers[name] !== undefined) {
+      if (fieldMappings[name] !== undefined) {
         return {
           ...await documentFields,
-          [name]: await fieldMappers[name](fields, locale, ...fieldMappersExtraArgs)
+          [name]: await fieldMappings[name](fields, locale, ...fieldMappersExtraArgs)
         }
       }
       if (fields[name] !== undefined) {

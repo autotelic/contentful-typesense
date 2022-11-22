@@ -1,9 +1,9 @@
 import test from 'ava'
 import sinon from 'sinon'
-import { createDocument } from './createDocument.js'
+import { createDocument } from '../lib/createDocument.js'
 
 test('createDocument', async t => {
-  const collectionFields = [
+  const schemaFields = [
     { name: 'name', type: 'string', optional: true },
     { name: 'dateOfSomething', type: 'int64', optional: true },
     { name: 'anotherField', type: 'string' },
@@ -33,7 +33,7 @@ test('createDocument', async t => {
     dateOfSomething: 'Date'
   }
 
-  const fieldMappers = {
+  const fieldMappings = {
     locations: sinon.stub().returns([
       [51.509865, -0.118092],
       [49.246292, -123.116226]
@@ -46,17 +46,16 @@ test('createDocument', async t => {
 
   const document = await createDocument({
     entryId: '5p6Frfcx7wVhdrmPncy6Q9',
-    collectionFields,
+    schemaFields,
     fields,
     fieldTypes,
     locale: 'en-US',
-    fieldMappers,
+    fieldMappings,
     fieldFormatters,
     fieldMappersExtraArgs: ['arg1', 'arg2']
   })
 
-  console.log(document)
-  t.true(fieldMappers.locations.calledOnceWithExactly(fields, 'en-US', 'arg1', 'arg2'))
+  t.true(fieldMappings.locations.calledOnceWithExactly(fields, 'en-US', 'arg1', 'arg2'))
   t.true(fieldFormatters['Date'].calledOnceWithExactly('2015-11-06T09:45:27'))
   t.deepEqual(document, {
     id: '5p6Frfcx7wVhdrmPncy6Q9',

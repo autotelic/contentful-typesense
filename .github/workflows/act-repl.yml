@@ -1,0 +1,24 @@
+on:
+  repository_dispatch:
+    types: [act_repl]
+  workflow_dispatch:
+
+jobs:
+  act_repl:
+    runs-on: ubuntu-latest
+    name: REPL using act
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+      - run: npm i
+      - name:
+        id: hello
+        uses: ./action
+        with:
+          contentManagementToken: ${{ secrets.CONTENFUL_CMA_KEY }}
+          typesenseAdminApiKey: ${{ secrets.TYPESENSE_ADMIN_API_KEY }}
+          contentfulSpaceId: opxulaoc9o1m
+          dropAndCreateCollections: true

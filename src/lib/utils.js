@@ -3,10 +3,10 @@ export const fieldFormatters = {
   'Date': value => Date.parse(value) / 1000
 }
 
-// export const getEnvironment = async (client, spaceId, environmentName) => {
-//   const space = await client.getSpace(spaceId)
-//   return await space.getEnvironment(environmentName)
-// }
+export const getEnvironment = async (client, spaceId, environmentName) => {
+  const space = await client.getSpace(spaceId)
+  return await space.getEnvironment(environmentName)
+}
 
 export const defaultFieldsFilter = ({ disabled, omitted }) => !disabled && !omitted
 
@@ -39,4 +39,18 @@ export const getCollectionFields = (schemaFields, extraFields = [], fieldsFilter
     }, [
       ...extraFields
     ])
+}
+
+export const getCollections = (contentTypes, contentTypeMappings, collectionFields = getCollectionFields) => {
+  return contentTypes.items
+    .filter(({ sys }) => Object.keys(contentTypeMappings).includes(sys.id))
+    .map(({ sys, fields }) => {
+      const { id: name } = sys
+      const mappings = contentTypeMappings[name]
+      const extraFields = mappings?.extraFields || []
+      return {
+        name,
+        fields: collectionFields(fields, extraFields)
+      }
+    })
 }

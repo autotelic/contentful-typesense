@@ -1,10 +1,14 @@
 import test from 'ava'
+import sinon from 'sinon'
+
 import {
   defaultFieldsFilter,
   getSchemaFieldTypes,
   getCollectionFields,
-  fieldFormatters
-} from './utils.js'
+  fieldFormatters,
+  getCollections,
+  getEnvironment
+} from '../lib/utils.js'
 
 const fieldsFilterMacro = test.macro({
   exec(t, input, assertion) {
@@ -126,4 +130,61 @@ test('Date fieldFormatter', t => {
   const { Date: dateFormatter } = fieldFormatters
 
   t.is(dateFormatter("2015-11-06T09:45:27"), 1446831927)
+})
+
+test('getCollections', t => {
+  const contentTypes = {
+    items: [
+      {
+        sys: { id: 'foo' },
+        fields: 'fooFields'
+      },
+      {
+        sys: { id: 'bar' },
+        fields: 'barFields'
+      },
+      {
+        sys: { id: 'fizz' },
+        fields: 'fizzFields'
+      }
+    ]
+  }
+
+  const contentTypeMappings = {
+    foo: {},
+    bar: {
+      extraFields: 'barExtraFields'
+    }
+  }
+
+  const collectionFields = sinon.stub()
+  collectionFields.onCall(0).returns('fooFieldsCollection')
+  collectionFields.onCall(1).returns('barFieldsCollection')
+
+  const collections = getCollections(contentTypes, contentTypeMappings, collectionFields)
+
+  t.deepEqual(collectionFields.getCall(0).args, ['fooFields', []])
+  t.deepEqual(collectionFields.getCall(1).args, ['barFields', 'barExtraFields'])
+  t.deepEqual(collections, [
+    { name: 'foo', fields: 'fooFieldsCollection' },
+    { name: 'bar', fields: 'barFieldsCollection' }
+  ])
+})
+
+test('getEnvironment', async t => {
+  const expected = { name: 'master' }
+  const space = {
+    getEnvironment: sinon.stub().returns(expected)
+  }
+  const client = {
+    getSpace: sinon.stub().returns(space)
+  }
+  const spaceId = 'abc12345'
+  const environmentName = 'master'
+
+  const actual = await getEnvironment(client, spaceId, environmentName)
+
+  t.true(client.getSpace.calledOnceWithExactly(spaceId))
+  t.true(space.getEnvironment.calledOnceWithExactly(environmentName))
+  t.is(actual, expected)
 })

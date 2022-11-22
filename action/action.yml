@@ -1,0 +1,29 @@
+name: Index Contentful data in Typesense
+description: Creates collections and indexes Contentful data into Typesense
+author: Autotelic
+inputs:
+  typesenseUrl:
+    required: true
+    default: http://localhost:8108
+  locale:
+    required: true
+    default: en-US
+  dropAndCreateCollections:
+    default: false
+  contentfulSpaceId:
+    required: true
+  contentfulEnvironment:
+    required: true
+    default: master
+  contentTypeMappingsPath:
+    required: true
+    default: ./contentTypeMappings.js
+
+secrets:
+  contentManagementToken:
+    required: true
+  typesenseAdminApiKey:
+    required: true
+runs:
+  using: node16
+  main: ../src/action.js
