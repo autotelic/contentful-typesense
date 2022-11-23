@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "c8 --100 ava",
-    "build": "ncc build -o dist src/action.js --license licenses.txt"
+    "build": "ncc build -s -o dist src/action.js --license licenses.txt"
   },
   "repository": {
     "type": "git",
