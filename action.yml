@@ -9,11 +9,8 @@ inputs:
     required: true
     default: en-US
   typesenseAction:
-    type: choice
     description: Typesense bulk action
-    options:
-    - dropAndCreateCollections
-    - bulkIndexing
+    default: bulkIndexing
   contentfulSpaceId:
     required: true
   contentfulEnvironment:
