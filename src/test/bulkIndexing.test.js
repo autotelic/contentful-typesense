@@ -70,7 +70,7 @@ test.beforeEach(t => {
   }
 })
 
-test('bulkIndexing - drop and create collections', async t => {
+test('bulkIndexing', async t => {
   const { context } = t
   const {
     contentfulClient,

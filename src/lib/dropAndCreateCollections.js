@@ -19,9 +19,7 @@ export const dropAndCreateCollections = async ({
     const { name } = collection
     try {
       typesenseClient.collections(name).delete()
-    } catch (error) {
-      console.log('no collection to drop', name)
-    }
+    } catch (error) {}
     typesenseClient.collections().create(collection)
   })
 }

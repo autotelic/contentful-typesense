@@ -8,8 +8,12 @@ inputs:
   locale:
     required: true
     default: en-US
-  dropAndCreateCollections:
-    default: false
+  typesenseAction:
+    type: choice
+    description: Typesense bulk action
+    options:
+    - dropAndCreateCollections
+    - bulkIndexing
   contentfulSpaceId:
     required: true
   contentfulEnvironment:
