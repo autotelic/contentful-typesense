@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "c8 --100 ava"
+    "test": "c8 --100 ava",
+    "build": "ncc build -o dist src/action.js --license licenses.txt"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   },
   "homepage": "https://github.com/autotelic/contentful-typesense#readme",
   "devDependencies": {
+    "@vercel/ncc": "^0.34.0",
     "ava": "^5.1.0",
     "c8": "^7.12.0",
     "chai": "^4.3.7",
