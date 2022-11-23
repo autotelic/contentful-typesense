@@ -19,12 +19,11 @@ inputs:
   contentTypeMappingsPath:
     required: true
     default: ./contentTypeMappings.js
-
-secrets:
   contentManagementToken:
     required: true
   typesenseAdminApiKey:
     required: true
+
 runs:
   using: node16
   main: dist/index.js
