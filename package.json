@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "c8 --100 ava",
-    "build": "ncc build -s -o dist src/action.js --license licenses.txt"
+    "build": "ncc build -a -s -o dist src/action.js --license licenses.txt"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,7 @@
     "contentful-export": "^7.19.1",
     "contentful-management": "^10.21.0",
     "normalizr": "^3.6.2",
-    "typesense": "^1.4.3"
+    "typesense": "^1.4.3",
+    "zen-observable": "^0.9.0"
   }
 }
