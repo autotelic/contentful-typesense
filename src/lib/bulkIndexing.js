@@ -39,7 +39,8 @@ export const bulkIndexing = async ({
     '--use-verbose-renderer', 'true',
     '--space-id', spaceId,
     '--skip-content-model', 'true',
-    '--content-file', exportFileName
+    '--content-file', exportFileName,
+    '--management-token', managementToken
   ])
 
   const data = JSON.parse(await fs.readFile(exportFileName, 'utf8'))
