@@ -46,7 +46,7 @@ const bulkIndexingMacro = test.macro({
     const github = {
       context: { eventName }
     }
-    getInput.withArgs('typesenseAction').returns('bulkIndex')
+    getInput.withArgs('typesenseAction').returns('bulkIndexing')
 
     await run({
       core,

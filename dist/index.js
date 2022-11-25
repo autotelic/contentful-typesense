@@ -44072,7 +44072,7 @@ const run = async ({
       })
     }
 
-    if (typesenseAction === 'bulkIndex') {
+    if (typesenseAction === 'bulkIndexing') {
       await runBulkIndexing({
         contentfulClient,
         typesenseClient,
