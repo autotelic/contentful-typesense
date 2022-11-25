@@ -43964,9 +43964,9 @@ const dropAndCreateCollections = async ({
 
   collectionSchemas.forEach(collection => {
     const { name } = collection
-    try {
-      typesenseClient.collections(name).delete()
-    } catch (error) {}
+    // try {
+    //   typesenseClient.collections(name).delete()
+    // } catch (error) {}
     typesenseClient.collections().create(collection)
   })
 }
