@@ -1,3 +1,4 @@
+import { promises as fs } from 'fs'
 import * as exec from '@actions/exec'
 import { normalize, schema } from 'normalizr'
 import {
@@ -32,20 +33,18 @@ export const bulkIndexing = async ({
     (input, _parent, _key) => input.sys.contentType.sys.id
   )
 
-  let contentfulOutput = ''
-  let contentfulError = ''
+  const exportFileName = `contentfulExport-${spaceId}.json`
+  await runExec.exec('contentful', [
+    'space', 'export',
+    '--use-verbose-renderer', 'true',
+    '--space-id', spaceId,
+    '--skip-content-model', 'true',
+    '--content-file', exportFileName
+  ])
 
-  await runExec.exec('contentful', ['--version'], {
-    listeners: {
-      stdout: (data) => {
-        contentfulOutput += data.toString()
-      },
-      stderr: (data) => {
-        contentfulError += data.toString()
-      }
-    }
-  })
-  console.log(contentfulOutput, contentfulError)
+  const data = JSON.parse(await fs.readFile(exportFileName, 'utf8'))
+
+  console.log(data)
   // const data = await contentfulExportClient({
   //   spaceId,
   //   managementToken,
@@ -53,6 +52,7 @@ export const bulkIndexing = async ({
   //   contentOnly: true,
   //   saveFile: false
   // })
+
 
   const normalizedData = normalize(data.entries, arraySchema)
 
