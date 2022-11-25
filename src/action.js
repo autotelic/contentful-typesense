@@ -1,5 +1,3 @@
-import 'any-observable/register/zen'
-
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import contentful from 'contentful-management'

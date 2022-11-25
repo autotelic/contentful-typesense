@@ -32,7 +32,6 @@
     "@actions/github": "^5.1.1",
     "contentful-management": "^10.21.0",
     "normalizr": "^3.6.2",
-    "typesense": "^1.4.3",
-    "zen-observable": "^0.9.0"
+    "typesense": "^1.4.3"
   }
 }
