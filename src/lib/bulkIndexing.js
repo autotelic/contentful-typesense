@@ -1,4 +1,4 @@
-import contentfulExport from 'contentful-export'
+import * as exec from '@actions/exec'
 import { normalize, schema } from 'normalizr'
 import {
   getEnvironment,
@@ -17,7 +17,7 @@ export const bulkIndexing = async ({
   environmentName,
   contentTypeMappings,
   includeDrafts,
-  contentfulExportClient = contentfulExport,
+  runExec = exec,
   getContentfulEnvironment = getEnvironment
 }) => {
   const environment = await getContentfulEnvironment(contentfulClient, spaceId, environmentName)
@@ -32,13 +32,27 @@ export const bulkIndexing = async ({
     (input, _parent, _key) => input.sys.contentType.sys.id
   )
 
-  const data = await contentfulExportClient({
-    spaceId,
-    managementToken,
-    includeDrafts,
-    contentOnly: true,
-    saveFile: false
+  let contentfulOutput = ''
+  let contentfulError = ''
+
+  await runExec.exec('contentful', ['--version'], {
+    listeners: {
+      stdout: (data) => {
+        contentfulOutput += data.toString()
+      },
+      stderr: (data) => {
+        contentfulError += data.toString()
+      }
+    }
   })
+  console.log(contentfulOutput, contentfulError)
+  // const data = await contentfulExportClient({
+  //   spaceId,
+  //   managementToken,
+  //   includeDrafts,
+  //   contentOnly: true,
+  //   saveFile: false
+  // })
 
   const normalizedData = normalize(data.entries, arraySchema)
 
