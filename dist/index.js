@@ -43901,22 +43901,16 @@ const bulkIndexing = async ({
     'space', 'export',
     '--use-verbose-renderer', 'true',
     '--space-id', spaceId,
+    '--management-token', managementToken,
+    '--include-drafts', includeDrafts,
     '--skip-content-model', 'true',
-    '--content-file', exportFileName,
-    '--management-token', managementToken
+    '--skip-roles', 'true',
+    '--skip-webhooks', 'true',
+    '--skip-tags', 'true',
+    '--content-file', exportFileName
   ])
 
   const data = JSON.parse(await external_fs_.promises.readFile(exportFileName, 'utf8'))
-
-  console.log(data)
-  // const data = await contentfulExportClient({
-  //   spaceId,
-  //   managementToken,
-  //   includeDrafts,
-  //   contentOnly: true,
-  //   saveFile: false
-  // })
-
 
   const normalizedData = (0,normalizr/* normalize */.Fv)(data.entries, arraySchema)
 
