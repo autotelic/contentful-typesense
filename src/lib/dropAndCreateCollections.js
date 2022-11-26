@@ -15,12 +15,12 @@ export const dropAndCreateCollections = async ({
   const contentTypes = await environment.getContentTypes()
   const collectionSchemas = await getCollections(contentTypes, contentTypeMappings)
 
-  await Promise.all(collectionSchemas.forEach(async collection => {
+  collectionSchemas.forEach(async collection => {
     const { name } = collection
     try {
       await typesenseClient.collections(name).delete()
     } catch (error) {}
 
     await typesenseClient.collections().create(collection)
-  }))
+  })
 }
