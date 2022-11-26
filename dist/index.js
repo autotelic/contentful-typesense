@@ -43962,14 +43962,14 @@ const dropAndCreateCollections = async ({
   const contentTypes = await environment.getContentTypes()
   const collectionSchemas = await getCollections(contentTypes, contentTypeMappings)
 
-  await Promise.all(collectionSchemas.forEach(async collection => {
+  for await (const collection of collectionSchemas) {
     const { name } = collection
     try {
       await typesenseClient.collections(name).delete()
-    } catch (error) {}
+    } catch (error) { }
 
     await typesenseClient.collections().create(collection)
-  }))
+  }
 }
 
 ;// CONCATENATED MODULE: ./src/lib/upsertDocument.js
