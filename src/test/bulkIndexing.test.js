@@ -19,7 +19,8 @@ test.beforeEach(t => {
     bar: {}
   }
   const includeDrafts = true
-  const contentfulExportClient = sinon.stub().returns({
+  const runExec = { exec: sinon.spy() }
+  const readFile = sinon.stub().returns({
     entries: [
       {
         sys: {
@@ -62,7 +63,8 @@ test.beforeEach(t => {
     environmentName,
     contentTypeMappings,
     includeDrafts,
-    contentfulExportClient,
+    runExec,
+    readFile,
     getContentfulEnvironment,
     getContentTypes,
     collections,
@@ -81,7 +83,8 @@ test('bulkIndexing', async t => {
     environmentName,
     contentTypeMappings,
     includeDrafts,
-    contentfulExportClient,
+    runExec,
+    readFile,
     getContentfulEnvironment,
     getContentTypes,
     collections,
@@ -97,7 +100,8 @@ test('bulkIndexing', async t => {
     environmentName,
     contentTypeMappings,
     includeDrafts,
-    contentfulExportClient,
+    runExec,
+    readFile,
     getContentfulEnvironment,
     getContentTypes
   })
@@ -107,13 +111,32 @@ test('bulkIndexing', async t => {
   t.is(collections.callCount, 2)
   t.deepEqual(collections.args, [['foo'], ['bar']])
 
-  t.true(contentfulExportClient.calledOnceWithExactly({
-    spaceId,
+  t.true(runExec.exec.calledOnceWithExactly('contentful', [
+    'space',
+    'export',
+    '--management-token',
     managementToken,
-    includeDrafts,
-    contentOnly: true,
-    saveFile: false
-  }))
+    '--space-id',
+    spaceId,
+    '--environment-id',
+    environmentName,
+    '--include-drafts',
+    true,
+    '--skip-content-model',
+    'true',
+    '--skip-roles',
+    'true',
+    '--skip-webhooks',
+    'true',
+    '--skip-tags',
+    'true',
+    '--content-file',
+    'contentfulExport-fgt354678998.json',
+    '--use-verbose-renderer',
+    'true'
+  ]))
+
+  t.true(readFile.calledOnceWithExactly('contentfulExport-fgt354678998.json'))
 
   t.true(importDocuments.calledTwice)
   t.deepEqual(importDocuments.args, [

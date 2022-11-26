@@ -43882,6 +43882,7 @@ const bulkIndexing = async ({
   contentTypeMappings,
   includeDrafts,
   runExec = exec_namespaceObject,
+  readFile = async exportFileName => JSON.parse(await external_fs_.promises.readFile(exportFileName, 'utf8')),
   getContentfulEnvironment = getEnvironment
 }) => {
   const environment = await getContentfulEnvironment(contentfulClient, spaceId, environmentName)
@@ -43899,18 +43900,19 @@ const bulkIndexing = async ({
   const exportFileName = `contentfulExport-${spaceId}.json`
   await runExec.exec('contentful', [
     'space', 'export',
-    '--use-verbose-renderer', 'true',
-    '--space-id', spaceId,
     '--management-token', managementToken,
+    '--space-id', spaceId,
+    '--environment-id', environmentName,
     '--include-drafts', includeDrafts,
     '--skip-content-model', 'true',
     '--skip-roles', 'true',
     '--skip-webhooks', 'true',
     '--skip-tags', 'true',
-    '--content-file', exportFileName
+    '--content-file', exportFileName,
+    '--use-verbose-renderer', 'true'
   ])
 
-  const data = JSON.parse(await external_fs_.promises.readFile(exportFileName, 'utf8'))
+  const data = await readFile(exportFileName)
 
   const normalizedData = (0,normalizr/* normalize */.Fv)(data.entries, arraySchema)
 
