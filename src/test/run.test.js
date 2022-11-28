@@ -124,7 +124,9 @@ const upsertDocumentMacro = test.macro({
       context: {
         eventName: 'repository_dispatch',
         payload: {
-          client_payload: { topic, payload }
+          client_payload: {
+            topic, payload, content_type_id: 'property'
+          }
         }
       }
     }
@@ -171,7 +173,9 @@ const deleteDocumentMacro = test.macro({
       context: {
         eventName: 'repository_dispatch',
         payload: {
-          client_payload: { topic, payload }
+          client_payload: {
+            topic, payload, content_type_id: 'property'
+          }
         }
       }
     }
@@ -198,3 +202,46 @@ const deleteDocumentMacro = test.macro({
 test(deleteDocumentMacro, 'ContentManagement.Entry.delete')
 test(deleteDocumentMacro, 'ContentManagement.Entry.unpublish')
 test(deleteDocumentMacro, 'ContentManagement.Entry.archive')
+
+const wrongContentTypeIdMacro = test.macro({
+  async exec(t, topic) {
+    const { context } = t
+    const {
+      core,
+      contentfulClient,
+      typesenseClient,
+      contentTypeMappings
+    } = context
+    const payload = {}
+    const github = {
+      context: {
+        eventName: 'repository_dispatch',
+        payload: {
+          client_payload: {
+            topic, payload, content_type_id: 'anotherTypeId'
+          }
+        }
+      }
+    }
+    const runDeleteDocument = sinon.spy()
+    const runUpsertDocument = sinon.spy()
+    await run({
+      core,
+      github,
+      contentfulClient,
+      typesenseClient,
+      contentTypeMappings,
+      runDeleteDocument,
+      runUpsertDocument
+    })
+
+    t.true(runDeleteDocument.notCalled)
+    t.true(runUpsertDocument.notCalled)
+  },
+  title(_providedTitle, topic) {
+    return `nothing called on repository_dispatch with topic ${topic}`
+  }
+})
+
+test(wrongContentTypeIdMacro, 'ContentManagement.Entry.create')
+test(wrongContentTypeIdMacro, 'ContentManagement.Entry.delete')

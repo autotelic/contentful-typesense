@@ -43968,7 +43968,7 @@ const dropAndCreateCollections = async ({
     const { name } = collection
     try {
       await typesenseClient.collections(name).delete()
-    } catch (error) { }
+    } catch (error) {}
 
     await typesenseClient.collections().create(collection)
   }
@@ -44098,25 +44098,27 @@ const run = async ({
   if (eventName === 'repository_dispatch') {
     const { payload: webhookPayload } = context
     const { client_payload: clientPayload } = webhookPayload
-    const { topic, payload } = clientPayload
+    const { topic, payload, content_type_id: contentTypeId } = clientPayload
 
-    if (['ContentManagement.Entry.publish', 'ContentManagement.Entry.create', 'ContentManagement.Entry.unarchive'].includes(topic)) {
-      await runUpsertDocument({
-        contentfulClient,
-        typesenseClient,
-        locale,
-        spaceId,
-        environmentName,
-        contentTypeMappings,
-        payload
-      })
-    }
+    if (Object.keys(contentTypeMappings).includes(contentTypeId)) {
+      if (['ContentManagement.Entry.publish', 'ContentManagement.Entry.create', 'ContentManagement.Entry.unarchive'].includes(topic)) {
+        await runUpsertDocument({
+          contentfulClient,
+          typesenseClient,
+          locale,
+          spaceId,
+          environmentName,
+          contentTypeMappings,
+          payload
+        })
+      }
 
-    if (['ContentManagement.Entry.delete', 'ContentManagement.Entry.archive', 'ContentManagement.Entry.unpublish'].includes(topic)) {
-      await runDeleteDocument({
-        typesenseClient,
-        payload
-      })
+      if (['ContentManagement.Entry.delete', 'ContentManagement.Entry.archive', 'ContentManagement.Entry.unpublish'].includes(topic)) {
+        await runDeleteDocument({
+          typesenseClient,
+          payload
+        })
+      }
     }
   }
 }
