@@ -65,7 +65,9 @@ export const run = async ({
     const { client_payload: clientPayload } = webhookPayload
     const { topic, payload, content_type_id: contentTypeId } = clientPayload
 
-    core.info(`Contentful webhook with topic ${topic} for content type ${contentTypeId}`)
+    core.info(`Contentful webhook with topic '${topic}' for content type '${contentTypeId}'`)
+
+    console.log(webhookPayload)
 
     if (Object.keys(contentTypeMappings).includes(contentTypeId)) {
       if (['ContentManagement.Entry.publish', 'ContentManagement.Entry.create', 'ContentManagement.Entry.unarchive'].includes(topic)) {
