@@ -44052,6 +44052,8 @@ const run = async ({
   const { context } = github
   const { eventName } = context
 
+  console.log(context, eventName)
+
   const locale = core.getInput('locale')
   const spaceId = core.getInput('contentfulSpaceId')
   const environmentName = core.getInput('contentfulEnvironment')
@@ -44096,7 +44098,9 @@ const run = async ({
   }
 
   if (eventName === 'repository_dispatch') {
+    console.log(context)
     const { payload } = context
+    console.log(payload)
     const { topic } = payload
 
     if (['ContentManagement.Entry.publish', 'ContentManagement.Entry.create', 'ContentManagement.Entry.unarchive'].includes(topic)) {
