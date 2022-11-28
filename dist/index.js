@@ -44102,8 +44102,6 @@ const run = async ({
 
     core.info(`Contentful webhook with topic '${topic}' for content type '${contentTypeId}'`)
 
-    console.log(webhookPayload)
-
     if (Object.keys(contentTypeMappings).includes(contentTypeId)) {
       if (['ContentManagement.Entry.publish', 'ContentManagement.Entry.create', 'ContentManagement.Entry.unarchive'].includes(topic)) {
         await runUpsertDocument({
