@@ -61,6 +61,7 @@ export const run = async ({
   }
 
   if (eventName === 'repository_dispatch') {
+    console.log(context)
     const { payload } = context
     const { topic } = payload
 
