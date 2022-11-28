@@ -27,19 +27,17 @@ test.beforeEach(t => {
   const getContentfulEnvironment = sinon.stub().returns({ getContentType })
 
   const payload = {
-    payload: {
-      sys: {
-        id: 'xyz56789',
-        contentType: {
-          sys: {
-            id: 'foo'
-          }
+    sys: {
+      id: 'xyz56789',
+      contentType: {
+        sys: {
+          id: 'foo'
         }
-      },
-      fields: {
-        name: {
-          'en-US': 'Entry Name'
-        }
+      }
+    },
+    fields: {
+      name: {
+        'en-US': 'Entry Name'
       }
     }
   }

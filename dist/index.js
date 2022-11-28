@@ -43988,7 +43988,7 @@ const upsertDocument = async({
   payload,
   getContentfulEnvironment = getEnvironment
 }) => {
-  const { payload: { sys, fields } } = payload
+  const { sys, fields } = payload
   const { id: entryId, contentType: { sys: { id: contentTypeId } } } = sys
 
   const environment = await getContentfulEnvironment(contentfulClient, spaceId, environmentName)

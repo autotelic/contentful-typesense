@@ -119,11 +119,13 @@ const upsertDocumentMacro = test.macro({
       typesenseClient,
       contentTypeMappings
     } = context
-    const payload = { topic }
+    const payload = {}
     const github = {
       context: {
         eventName: 'repository_dispatch',
-        payload
+        payload: {
+          client_payload: { topic, payload }
+        }
       }
     }
     const runUpsertDocument = sinon.spy()
@@ -164,11 +166,13 @@ const deleteDocumentMacro = test.macro({
       typesenseClient,
       contentTypeMappings
     } = context
-    const payload = { topic }
+    const payload = {}
     const github = {
       context: {
         eventName: 'repository_dispatch',
-        payload
+        payload: {
+          client_payload: { topic, payload }
+        }
       }
     }
     const runDeleteDocument = sinon.spy()
