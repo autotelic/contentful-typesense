@@ -1,4 +1,3 @@
-import path from 'path'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import contentful from 'contentful-management'
@@ -25,9 +24,7 @@ const typesenseClient = new Typesense.Client({
 ;(async () => {
   try {
     const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
-    const { context } = github
-    console.log(context)
-    const { contentTypeMappings } = await import(path.join('', contentTypeMappingsPath))
+    const { contentTypeMappings } = await import(contentTypeMappingsPath)
     await run({ core, github, contentfulClient, typesenseClient, contentTypeMappings })
   } catch (error) {
     core.setFailed(error.message)
