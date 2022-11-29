@@ -25,9 +25,9 @@ const typesenseClient = new Typesense.Client({
 ;(async () => {
   try {
     const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
-    const { context: { workspace } } = github
-    console.log(workspace)
-    const { contentTypeMappings } = await import(path.join(workspace, contentTypeMappingsPath))
+    const { context } = github
+    console.log(context)
+    const { contentTypeMappings } = await import(path.join('', contentTypeMappingsPath))
     await run({ core, github, contentfulClient, typesenseClient, contentTypeMappings })
   } catch (error) {
     core.setFailed(error.message)

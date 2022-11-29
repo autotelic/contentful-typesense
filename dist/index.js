@@ -44208,9 +44208,9 @@ const typesenseClient = new Typesense.Client({
 ;(async () => {
   try {
     const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
-    const { context: { workspace } } = github_namespaceObject
-    console.log(workspace)
-    const { contentTypeMappings } = await __nccwpck_require__(6925)(external_path_.join(workspace, contentTypeMappingsPath))
+    const { context } = github_namespaceObject
+    console.log(context)
+    const { contentTypeMappings } = await __nccwpck_require__(6925)(external_path_.join('', contentTypeMappingsPath))
     await run({ core: core_namespaceObject, github: github_namespaceObject, contentfulClient, typesenseClient, contentTypeMappings })
   } catch (error) {
     core.setFailed(error.message)
