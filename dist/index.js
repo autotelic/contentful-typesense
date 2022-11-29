@@ -43772,8 +43772,8 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(7147);
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(1017);
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
 var core_namespaceObject = /*#__PURE__*/__nccwpck_require__.t(core, 2);
@@ -43784,6 +43784,8 @@ var github_namespaceObject = /*#__PURE__*/__nccwpck_require__.t(github, 2);
 var contentful_management_node = __nccwpck_require__(9839);
 // EXTERNAL MODULE: ./node_modules/typesense/lib/Typesense.js
 var Typesense = __nccwpck_require__(7235);
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(7147);
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
 var exec = __nccwpck_require__(1514);
 var exec_namespaceObject = /*#__PURE__*/__nccwpck_require__.t(exec, 2);
@@ -44206,7 +44208,9 @@ const typesenseClient = new Typesense.Client({
 ;(async () => {
   try {
     const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
-    const { contentTypeMappings } = await __nccwpck_require__(6925)(contentTypeMappingsPath)
+    const { context: { workspace } } = github_namespaceObject
+    console.log(workspace)
+    const { contentTypeMappings } = await __nccwpck_require__(6925)(external_path_.join(workspace, contentTypeMappingsPath))
     await run({ core: core_namespaceObject, github: github_namespaceObject, contentfulClient, typesenseClient, contentTypeMappings })
   } catch (error) {
     core.setFailed(error.message)

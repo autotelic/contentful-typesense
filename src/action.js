@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import path from 'path'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import contentful from 'contentful-management'
@@ -25,7 +25,9 @@ const typesenseClient = new Typesense.Client({
 ;(async () => {
   try {
     const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
-    const { contentTypeMappings } = await import(contentTypeMappingsPath)
+    const { context: { workspace } } = github
+    console.log(workspace)
+    const { contentTypeMappings } = await import(path.join(workspace, contentTypeMappingsPath))
     await run({ core, github, contentfulClient, typesenseClient, contentTypeMappings })
   } catch (error) {
     core.setFailed(error.message)
