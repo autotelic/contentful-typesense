@@ -20,6 +20,7 @@ export const run = async ({
   const locale = core.getInput('locale')
   const spaceId = core.getInput('contentfulSpaceId')
   const environmentName = core.getInput('contentfulEnvironment')
+  const includeDrafts = core.getInput('includeDrafts')
   const managementToken = core.getInput('contentManagementToken')
 
   if (eventName === 'workflow_dispatch') {
@@ -43,7 +44,8 @@ export const run = async ({
         spaceId,
         managementToken,
         environmentName,
-        contentTypeMappings
+        contentTypeMappings,
+        includeDrafts
       })
     }
   }
@@ -56,7 +58,8 @@ export const run = async ({
       spaceId,
       managementToken,
       environmentName,
-      contentTypeMappings
+      contentTypeMappings,
+      includeDrafts
     })
   }
 
@@ -68,24 +71,53 @@ export const run = async ({
     core.info(`Contentful webhook with topic '${topic}' for content type '${contentTypeId}'`)
 
     if (Object.keys(contentTypeMappings).includes(contentTypeId)) {
-      if (['ContentManagement.Entry.publish', 'ContentManagement.Entry.create', 'ContentManagement.Entry.unarchive'].includes(topic)) {
+      const { sys } = payload
+      const {
+        publishedVersion,
+        version,
+        id
+      } = sys
+
+      const isDraft = !publishedVersion
+      const isChanged = !!publishedVersion && version >= publishedVersion + 2
+      const isPublished = !!publishedVersion && version === publishedVersion + 1
+
+      let upsertEntry = false
+      let deleteEntry = false
+
+      if (topic === 'ContentManagement.Entry.create' && includeDrafts) upsertEntry = true
+      if (topic === 'ContentManagement.Entry.publish') upsertEntry = true
+      if (topic === 'ContentManagement.Entry.unarchive' && includeDrafts) upsertEntry = true
+      if (topic === 'ContentManagement.Entry.archive' && (isPublished || isChanged)) deleteEntry = true
+      if (topic === 'ContentManagement.Entry.archive' && isDraft && includeDrafts) deleteEntry = true
+      if (topic === 'ContentManagement.Entry.delete' && (isPublished || isChanged)) deleteEntry = true
+      if (topic === 'ContentManagement.Entry.delete' && isDraft && includeDrafts) deleteEntry = true
+      if (topic === 'ContentManagement.Entry.unpublish' && !includeDrafts) deleteEntry = true
+
+      if (upsertEntry) {
+        core.info(`Upserting document with id ${id}`)
         await runUpsertDocument({
           contentfulClient,
           typesenseClient,
           locale,
           spaceId,
           environmentName,
+          includeDrafts,
           contentTypeMappings,
           payload
         })
       }
 
-      if (['ContentManagement.Entry.delete', 'ContentManagement.Entry.archive', 'ContentManagement.Entry.unpublish'].includes(topic)) {
+      if (deleteEntry) {
+        core.info(`Deleting document with id ${id}`)
         await runDeleteDocument({
           typesenseClient,
+          includeDrafts,
           payload
         })
       }
+    } else {
+      core.info(`Content type '${contentTypeId}' not mapped for indexing`)
     }
   }
 }

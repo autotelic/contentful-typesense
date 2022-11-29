@@ -17,7 +17,7 @@ export const bulkIndexing = async ({
   managementToken,
   environmentName,
   contentTypeMappings,
-  includeDrafts,
+  includeDrafts = true,
   runExec = exec,
   readFile = async exportFileName => JSON.parse(await fs.readFile(exportFileName, 'utf8')),
   getContentfulEnvironment = getEnvironment

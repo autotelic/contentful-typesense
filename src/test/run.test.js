@@ -5,11 +5,12 @@ import { run } from '../lib/run.js'
 
 test.beforeEach(t => {
   const getInput = sinon.stub()
+  const info = sinon.spy()
   getInput.withArgs('locale').returns('en-US')
   getInput.withArgs('contentfulSpaceId').returns('abc-1234')
   getInput.withArgs('contentfulEnvironment').returns('master')
   getInput.withArgs('contentManagementToken').returns('cmt-123456')
-  const core = { getInput }
+  const core = { getInput, info }
 
   const contentfulClient = {}
   const typesenseClient = {}
@@ -47,6 +48,7 @@ const bulkIndexingMacro = test.macro({
       context: { eventName }
     }
     getInput.withArgs('typesenseAction').returns('bulkIndexing')
+    getInput.withArgs('includeDrafts').returns(true)
 
     await run({
       core,
@@ -64,7 +66,8 @@ const bulkIndexingMacro = test.macro({
       spaceId: 'abc-1234',
       managementToken: 'cmt-123456',
       environmentName: 'master',
-      contentTypeMappings
+      contentTypeMappings,
+      includeDrafts: true
     }))
   },
   title(_providedTitle, eventName) {
@@ -111,15 +114,17 @@ test('dropAndCreateCollections on workflow_dispatch', async t => {
 })
 
 const upsertDocumentMacro = test.macro({
-  async exec(t, topic) {
+  async exec(t, topic, includeDrafts, upsertCalled) {
     const { context } = t
     const {
       core,
       contentfulClient,
       typesenseClient,
-      contentTypeMappings
+      contentTypeMappings,
+      getInput
     } = context
-    const payload = {}
+    getInput.withArgs('includeDrafts').returns(includeDrafts)
+    const payload = { sys }
     const github = {
       context: {
         eventName: 'repository_dispatch',
@@ -140,34 +145,41 @@ const upsertDocumentMacro = test.macro({
       runUpsertDocument
     })
 
-    t.true(runUpsertDocument.calledOnceWithExactly({
+
+    t[String(upsertCalled)](runUpsertDocument.calledOnceWithExactly({
       contentfulClient,
       typesenseClient,
       locale: 'en-US',
       spaceId: 'abc-1234',
       environmentName: 'master',
+      includeDrafts,
       contentTypeMappings,
       payload
     }))
+    t[String(!upsertCalled)](runUpsertDocument.notCalled)
   },
-  title(_providedTitle, topic) {
-    return `upsertDocument on repository_dispatch with topic ${topic}`
+  title(_providedTitle, topic, includeDrafts) {
+    return `upsertDocument on repository_dispatch with topic ${topic}, includeDrafts: ${includeDrafts}`
   }
 })
 
-test(upsertDocumentMacro, 'ContentManagement.Entry.create')
-test(upsertDocumentMacro, 'ContentManagement.Entry.publish')
-test(upsertDocumentMacro, 'ContentManagement.Entry.unarchive')
+test(upsertDocumentMacro, 'ContentManagement.Entry.create', true, true)
+test(upsertDocumentMacro, 'ContentManagement.Entry.publish', false, true)
+test(upsertDocumentMacro, 'ContentManagement.Entry.publish', true, true)
+test(upsertDocumentMacro, 'ContentManagement.Entry.unarchive', false, false)
+test(upsertDocumentMacro, 'ContentManagement.Entry.unarchive', true, true)
 
 const deleteDocumentMacro = test.macro({
-  async exec(t, topic) {
+  async exec(t, topic, sys, includeDrafts, deleteCalled) {
     const { context } = t
     const {
       core,
       contentfulClient,
       typesenseClient,
-      contentTypeMappings
+      contentTypeMappings,
+      getInput
     } = context
+    getInput.withArgs('includeDrafts').returns(includeDrafts)
     const payload = {}
     const github = {
       context: {
@@ -199,9 +211,9 @@ const deleteDocumentMacro = test.macro({
   }
 })
 
-test(deleteDocumentMacro, 'ContentManagement.Entry.delete')
-test(deleteDocumentMacro, 'ContentManagement.Entry.unpublish')
-test(deleteDocumentMacro, 'ContentManagement.Entry.archive')
+// test(deleteDocumentMacro, 'ContentManagement.Entry.delete')
+// test(deleteDocumentMacro, 'ContentManagement.Entry.unpublish')
+// test(deleteDocumentMacro, 'ContentManagement.Entry.archive')
 
 const wrongContentTypeIdMacro = test.macro({
   async exec(t, topic) {
