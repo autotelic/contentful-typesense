@@ -43513,6 +43513,25 @@ module.exports = eval("require")("encoding");
 
 /***/ }),
 
+/***/ 6925:
+/***/ ((module) => {
+
+function webpackEmptyAsyncContext(req) {
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncaught exception popping up in devtools
+	return Promise.resolve().then(() => {
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	});
+}
+webpackEmptyAsyncContext.keys = () => ([]);
+webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
+webpackEmptyAsyncContext.id = 6925;
+module.exports = webpackEmptyAsyncContext;
+
+/***/ }),
+
 /***/ 9491:
 /***/ ((module) => {
 
@@ -44185,12 +44204,13 @@ const typesenseClient = new Typesense.Client({
 })
 
 ;(async () => {
-  const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
-  const contentTypeMappings = JSON.parse(await external_fs_.promises.readFile(contentTypeMappingsPath, 'utf8'))
-
-  run({ core: core_namespaceObject, github: github_namespaceObject, contentfulClient, typesenseClient, contentTypeMappings }).catch(error => {
+  try {
+    const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
+    const { contentTypeMappings } = await __nccwpck_require__(6925)(contentTypeMappingsPath)
+    await run({ core: core_namespaceObject, github: github_namespaceObject, contentfulClient, typesenseClient, contentTypeMappings })
+  } catch (error) {
     core.setFailed(error.message)
-  })
+  }
 })()
 
 })();
