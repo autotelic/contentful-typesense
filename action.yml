@@ -18,7 +18,7 @@ inputs:
     default: master
   contentTypeMappingsPath:
     required: true
-    default: ./contentTypeMappings.json
+    default: ./contentTypeMappings.js
   contentManagementToken:
     required: true
   typesenseAdminApiKey:
