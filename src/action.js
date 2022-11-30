@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import contentful from 'contentful-management'
@@ -24,7 +25,8 @@ const typesenseClient = new Typesense.Client({
 ;(async () => {
   try {
     const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
-    const { contentTypeMappings } = await import(contentTypeMappingsPath)
+    const require = createRequire(import.meta.url)
+    const contentTypeMappings = require(contentTypeMappingsPath)
     await run({ core, github, contentfulClient, typesenseClient, contentTypeMappings })
   } catch (error) {
     core.setFailed(error.message)
