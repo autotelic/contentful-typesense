@@ -43934,7 +43934,10 @@ const bulkIndexing = async ({
         fieldTypes,
         locale,
         fieldMappings,
-        fieldFormatters: fieldFormatters
+        fieldFormatters: fieldFormatters,
+        fieldMappersExtraArgs: [
+          document, normalizedData.entities, locale
+        ]
       })
     })
     return [collectionName, await Promise.all(promises)]
