@@ -43790,6 +43790,18 @@ const getSchemaFieldTypes = (schemaFields, fieldsFilter = defaultFieldsFilter) =
   return [name, type]
 }))
 
+const getContentfulFieldTypes = (contentTypes, contentTypeMappings) => {
+  return Object.fromEntries(contentTypes.items
+    .filter(({ sys }) => Object.keys(contentTypeMappings).includes(sys.id))
+    .map(({ sys, fields }) => {
+      const { id: name } = sys
+      return [name, Object.fromEntries(fields.filter(defaultFieldsFilter).map(field => {
+        const { type, id: name } = field
+        return [name, type]
+      }))]
+    }))
+}
+
 const typeMapper = {
   'Symbol': 'string',
   'Text': 'string',
@@ -43846,6 +43858,7 @@ const createDocument = async ({
     id: entryId,
     ...await schemaFields.reduce(async (documentFields, schemaField) => {
       const { name } = schemaField
+      // if (name === 'buildingLocation') console.log(fields[name], fields[name] !== undefined, fieldTypes[name], fieldFormatters[fieldTypes[name]])
       if (fieldMappings[name] !== undefined) {
         return {
           ...await documentFields,
@@ -43874,31 +43887,13 @@ const createDocument = async ({
 
 
 
-const bulkIndexing = async ({
-  contentfulClient,
-  typesenseClient,
-  locale,
-  spaceId,
+const getContentfulExportDataDefault = async ({
   managementToken,
+  spaceId,
   environmentName,
-  contentTypeMappings,
-  includeDrafts = true,
-  runExec = exec_namespaceObject,
-  readFile = async exportFileName => JSON.parse(await external_fs_.promises.readFile(exportFileName, 'utf8')),
-  getContentfulEnvironment = getEnvironment
+  includeDrafts,
+  runExec = exec_namespaceObject
 }) => {
-  const environment = await getContentfulEnvironment(contentfulClient, spaceId, environmentName)
-  const contentTypes = await environment.getContentTypes()
-  const collectionSchemas = await getCollections(contentTypes, contentTypeMappings)
-
-  const arraySchema = new normalizr/* schema.Array */.fK.Array(
-    Object.keys(contentTypeMappings).reduce((schemas, name) => ({
-      [name]: new normalizr/* schema.Entity */.fK.Entity(name, {}, { idAttribute: value => value.sys.id }),
-      ...schemas
-    }), {}),
-    (input, _parent, _key) => input.sys.contentType.sys.id
-  )
-
   const exportFileName = `contentfulExport-${spaceId}.json`
   await runExec.exec('contentful', [
     'space', 'export',
@@ -43913,8 +43908,39 @@ const bulkIndexing = async ({
     '--content-file', exportFileName,
     '--use-verbose-renderer', 'true'
   ])
+  return JSON.parse(await external_fs_.promises.readFile(exportFileName, 'utf8'))
+}
 
-  const data = await readFile(exportFileName)
+const bulkIndexing = async ({
+  contentfulClient,
+  typesenseClient,
+  locale,
+  spaceId,
+  managementToken,
+  environmentName,
+  contentTypeMappings,
+  includeDrafts = true,
+  getContentfulExportData = getContentfulExportDataDefault,
+  getContentfulEnvironment = getEnvironment
+}) => {
+  const environment = await getContentfulEnvironment(contentfulClient, spaceId, environmentName)
+  const contentTypes = await environment.getContentTypes()
+  const collectionSchemas = await getCollections(contentTypes, contentTypeMappings)
+
+  const arraySchema = new normalizr/* schema.Array */.fK.Array(
+    Object.keys(contentTypeMappings).reduce((schemas, name) => ({
+      [name]: new normalizr/* schema.Entity */.fK.Entity(name, {}, { idAttribute: value => value.sys.id }),
+      ...schemas
+    }), {}),
+    (input, _parent, _key) => input.sys.contentType.sys.id
+  )
+
+  const data = await getContentfulExportData({
+    managementToken,
+    spaceId,
+    environmentName,
+    includeDrafts
+  })
 
   const normalizedData = (0,normalizr/* normalize */.Fv)(data.entries, arraySchema)
 
@@ -43923,7 +43949,7 @@ const bulkIndexing = async ({
     const fieldMappings = mappings?.fieldMappings || {}
     const schema = collectionSchemas.find(schema => schema.name === collectionName)
     const { fields: schemaFields } = schema
-    const fieldTypes = getSchemaFieldTypes(schemaFields)
+    const fieldTypes = getContentfulFieldTypes(contentTypes, contentTypeMappings)[collectionName]
 
     const promises = Object.entries(entities).map(async ([entryId, document]) => {
       const { fields } = document
@@ -44005,7 +44031,7 @@ const upsertDocument = async({
 
   const { fields: contentTypeFields } = contentType
   const schemaFields = getCollectionFields(contentTypeFields, extraFields)
-  const fieldTypes = getSchemaFieldTypes(contentTypeFields)
+  const fieldTypes = getContentfulFieldTypes(contentTypes, contentTypeMappings)[collectionName]
 
   const document = await createDocument({
     entryId,
