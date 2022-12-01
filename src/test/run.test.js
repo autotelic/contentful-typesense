@@ -211,6 +211,7 @@ const deleteDocumentMacro = test.macro({
   }
 })
 
+// test(deleteDocumentMacro, 'ContentManagement.Entry.archive', true, true)
 // test(deleteDocumentMacro, 'ContentManagement.Entry.delete')
 // test(deleteDocumentMacro, 'ContentManagement.Entry.unpublish')
 // test(deleteDocumentMacro, 'ContentManagement.Entry.archive')

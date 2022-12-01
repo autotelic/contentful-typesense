@@ -4,36 +4,18 @@ import { normalize, schema } from 'normalizr'
 import {
   getEnvironment,
   getCollections,
-  getSchemaFieldTypes,
-  fieldFormatters
+  fieldFormatters,
+  getContentfulFieldTypes
 } from './utils.js'
 import { createDocument } from './createDocument.js'
 
-export const bulkIndexing = async ({
-  contentfulClient,
-  typesenseClient,
-  locale,
-  spaceId,
+const getContentfulExportDataDefault = async ({
   managementToken,
+  spaceId,
   environmentName,
-  contentTypeMappings,
-  includeDrafts = true,
-  runExec = exec,
-  readFile = async exportFileName => JSON.parse(await fs.readFile(exportFileName, 'utf8')),
-  getContentfulEnvironment = getEnvironment
+  includeDrafts,
+  runExec = exec
 }) => {
-  const environment = await getContentfulEnvironment(contentfulClient, spaceId, environmentName)
-  const contentTypes = await environment.getContentTypes()
-  const collectionSchemas = await getCollections(contentTypes, contentTypeMappings)
-
-  const arraySchema = new schema.Array(
-    Object.keys(contentTypeMappings).reduce((schemas, name) => ({
-      [name]: new schema.Entity(name, {}, { idAttribute: value => value.sys.id }),
-      ...schemas
-    }), {}),
-    (input, _parent, _key) => input.sys.contentType.sys.id
-  )
-
   const exportFileName = `contentfulExport-${spaceId}.json`
   await runExec.exec('contentful', [
     'space', 'export',
@@ -48,8 +30,39 @@ export const bulkIndexing = async ({
     '--content-file', exportFileName,
     '--use-verbose-renderer', 'true'
   ])
+  return JSON.parse(await fs.readFile(exportFileName, 'utf8'))
+}
 
-  const data = await readFile(exportFileName)
+export const bulkIndexing = async ({
+  contentfulClient,
+  typesenseClient,
+  locale,
+  spaceId,
+  managementToken,
+  environmentName,
+  contentTypeMappings,
+  includeDrafts = true,
+  getContentfulExportData = getContentfulExportDataDefault,
+  getContentfulEnvironment = getEnvironment
+}) => {
+  const environment = await getContentfulEnvironment(contentfulClient, spaceId, environmentName)
+  const contentTypes = await environment.getContentTypes()
+  const collectionSchemas = await getCollections(contentTypes, contentTypeMappings)
+
+  const arraySchema = new schema.Array(
+    Object.keys(contentTypeMappings).reduce((schemas, name) => ({
+      [name]: new schema.Entity(name, {}, { idAttribute: value => value.sys.id }),
+      ...schemas
+    }), {}),
+    (input, _parent, _key) => input.sys.contentType.sys.id
+  )
+
+  const data = await getContentfulExportData({
+    managementToken,
+    spaceId,
+    environmentName,
+    includeDrafts
+  })
 
   const normalizedData = normalize(data.entries, arraySchema)
 
@@ -58,7 +71,7 @@ export const bulkIndexing = async ({
     const fieldMappings = mappings?.fieldMappings || {}
     const schema = collectionSchemas.find(schema => schema.name === collectionName)
     const { fields: schemaFields } = schema
-    const fieldTypes = getSchemaFieldTypes(schemaFields)
+    const fieldTypes = getContentfulFieldTypes(contentTypes, contentTypeMappings)[collectionName]
 
     const promises = Object.entries(entities).map(async ([entryId, document]) => {
       const { fields } = document

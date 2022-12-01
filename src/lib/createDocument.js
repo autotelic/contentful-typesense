@@ -13,6 +13,7 @@ export const createDocument = async ({
     id: entryId,
     ...await schemaFields.reduce(async (documentFields, schemaField) => {
       const { name } = schemaField
+      // if (name === 'buildingLocation') console.log(fields[name], fields[name] !== undefined, fieldTypes[name], fieldFormatters[fieldTypes[name]])
       if (fieldMappings[name] !== undefined) {
         return {
           ...await documentFields,

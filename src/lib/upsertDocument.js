@@ -2,7 +2,7 @@ import { createDocument } from "./createDocument.js"
 import {
   getEnvironment,
   getCollectionFields,
-  getSchemaFieldTypes,
+  getContentfulFieldTypes,
   fieldFormatters
 } from './utils.js'
 
@@ -28,7 +28,7 @@ export const upsertDocument = async({
 
   const { fields: contentTypeFields } = contentType
   const schemaFields = getCollectionFields(contentTypeFields, extraFields)
-  const fieldTypes = getSchemaFieldTypes(contentTypeFields)
+  const fieldTypes = getContentfulFieldTypes(contentTypes, contentTypeMappings)[collectionName]
 
   const document = await createDocument({
     entryId,
