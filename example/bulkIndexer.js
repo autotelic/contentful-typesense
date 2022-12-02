@@ -4,7 +4,6 @@ import Typesense from 'typesense'
 
 // import { dropAndCreateCollections } from '../src/lib/dropAndCreateCollections.js'
 import { bulkIndexing } from '../src/lib/bulkIndexing.js'
-
 import { contentTypeMappings } from './contentTypeMappings.js'
 
 const managementToken = process.env.CONTENFUL_CMA_KEY

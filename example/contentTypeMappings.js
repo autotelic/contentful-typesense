@@ -1,7 +1,59 @@
 import { normalize, schema } from 'normalizr'
 
 export const contentTypeMappings = {
-  building: {},
+  building: {
+    webhookHandler: async ({
+      contentfulClient,
+      typesenseClient,
+      entryId,
+      spaceId,
+      environmentName,
+      locale,
+      payload
+    }) => {
+      const space = await contentfulClient.getSpace(spaceId)
+      const environment = await space.getEnvironment(environmentName)
+      const buildingEntities = {
+        entryId: payload
+      }
+      const linkedProperties = await environment.getEntries({
+        links_to_entry: entryId
+      })
+      const { total, items } = linkedProperties
+      if (total > 0) {
+        for await (const property of items) {
+          const { sys, fields } = property
+          const { id: propertyId } = sys
+          const { propertyBuilding } = fields
+          const buildingIds = propertyBuilding[locale].map(ref => ref.sys.id)
+          const buildingsToFetch = buildingIds.filter(id => !Object.keys(buildingEntities).includes(id))
+          if (buildingsToFetch.length > 0) {
+            const propertyBuildings = await environment.getEntries({
+              content_type: 'building',
+              'sys.id[in]': buildingsToFetch.join(',')
+            })
+            propertyBuildings.items.forEach(building => {
+              const { sys: { id } } = building
+              buildingEntities[id] = building
+            })
+          }
+          const locations = buildingIds.map(id => {
+            const building = buildingEntities[id]
+            const { fields: { buildingLocation } } = building
+            return Object.values(buildingLocation[locale]).reverse()
+          })
+
+          typesenseClient
+            .collections('property')
+            .documents()
+            .upsert({
+              id: propertyId,
+              locations
+            })
+        }
+      }
+    }
+  },
   property: {
     extraFields: [
       { name: 'locations', type: 'geopoint[]' }

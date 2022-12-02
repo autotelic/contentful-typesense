@@ -1,0 +1,119 @@
+{
+  "eventName": "repository_dispatch",
+  "payload": {
+    "event_type": "contentful_webhook_staging",
+    "client_payload": {
+      "content_type_id": "building",
+      "topic": "ContentManagement.Entry.publish",
+      "payload": {
+        "metadata": {
+          "tags": []
+        },
+        "sys": {
+          "type": "Entry",
+          "id": "56X1ELpVVnP5r21k9te9sY",
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "opxulaoc9o1m"
+            }
+          },
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "building"
+            }
+          },
+          "createdBy": {
+            "sys": {
+              "type": "Link",
+              "linkType": "User",
+              "id": "4KU4tQwdkPmewzA27sw0tq"
+            }
+          },
+          "updatedBy": {
+            "sys": {
+              "type": "Link",
+              "linkType": "User",
+              "id": "6ZOGNgK3dB8Cxnb6hc0vB4"
+            }
+          },
+          "revision": 3,
+          "createdAt": "2022-12-02T19:33:28.220Z",
+          "updatedAt": "2022-12-02T21:30:45.051Z"
+        },
+        "fields": {
+          "buildingName": {
+            "en-US": "2405 Conejo Spectrum Street Thousand Oaks CA 91320"
+          },
+          "buildingLocation": {
+            "en-US": {
+              "lon": -118.929,
+              "lat": 34.20389
+            }
+          },
+          "streetAddress1": {
+            "en-US": "2405 Conejo Spectrum Street"
+          },
+          "city": {
+            "en-US": "Thousand Oaks"
+          },
+          "state": {
+            "en-US": "CA"
+          },
+          "zipPostalCode": {
+            "en-US": "91320"
+          },
+          "country": {
+            "en-US": "United States"
+          },
+          "buildingConfiguration": {
+            "en-US": "Cross Dock"
+          },
+          "totalBuildingSize": {
+            "en-US": "55,748"
+          },
+          "sizeAvailable": {
+            "en-US": "55,748"
+          },
+          "multiTenant": {
+            "en-US": false
+          },
+          "yearBuiltRenovated": {
+            "en-US": "2018"
+          },
+          "buildingNumberOfFloors": {
+            "en-US": 1
+          },
+          "dockDoorsCount": {
+            "en-US": 5
+          },
+          "driveInDoorsCount": {
+            "en-US": 1
+          },
+          "clearHeightMin": {
+            "en-US": 28
+          },
+          "clearHeightMax": {
+            "en-US": 30
+          },
+          "buildingSprinklers": {
+            "en-US": "ESFR"
+          },
+          "buildingPower": {
+            "en-US": "800a/277 - 480v Heavy"
+          }
+        }
+      }
+    }
+  }
+}

@@ -116,6 +116,29 @@ export const run = async ({
           payload
         })
       }
+
+      const { webhookHandler } = contentTypeMappings[contentTypeId]
+      if (typeof webhookHandler === 'function') {
+        core.info(`Running repo-defined webhookHandler for '${contentTypeId}'`)
+        await webhookHandler({
+          contentfulClient,
+          typesenseClient,
+          locale,
+          spaceId,
+          environmentName,
+          includeDrafts,
+          contentTypeMappings,
+          payload,
+          entryId: id,
+          topic,
+          isDraft,
+          isChanged,
+          isPublished,
+          upsertEntry,
+          deleteEntry
+        })
+      }
+
     } else {
       core.info(`Content type '${contentTypeId}' not mapped for indexing`)
     }
