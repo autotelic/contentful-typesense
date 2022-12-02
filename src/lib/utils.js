@@ -15,7 +15,14 @@ export const getSchemaFieldTypes = (schemaFields, fieldsFilter = defaultFieldsFi
   return [name, type]
 }))
 
-export const getContentfulFieldTypes = (contentTypes, contentTypeMappings) => {
+export const getContentfulFieldTypes = ({ fields }) => {
+  return Object.fromEntries(fields.filter(defaultFieldsFilter).map(field => {
+    const { type, id: name } = field
+    return [name, type]
+  }))
+}
+
+export const getAllMappedContentfulFieldTypes = (contentTypes, contentTypeMappings) => {
   return Object.fromEntries(contentTypes.items
     .filter(({ sys }) => Object.keys(contentTypeMappings).includes(sys.id))
     .map(({ sys, fields }) => {

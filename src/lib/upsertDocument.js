@@ -28,7 +28,9 @@ export const upsertDocument = async({
 
   const { fields: contentTypeFields } = contentType
   const schemaFields = getCollectionFields(contentTypeFields, extraFields)
-  const fieldTypes = getContentfulFieldTypes(contentTypes, contentTypeMappings)[collectionName]
+  const fieldTypes = getContentfulFieldTypes(contentType)
+
+  const isBulk = false
 
   const document = await createDocument({
     entryId,
@@ -37,7 +39,8 @@ export const upsertDocument = async({
     fieldTypes,
     locale,
     fieldMappings,
-    fieldFormatters
+    fieldFormatters,
+    fieldMappersExtraArgs: [isBulk, environment]
   })
 
   typesenseClient

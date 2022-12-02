@@ -1,0 +1,164 @@
+{
+  "metadata": {
+    "tags": []
+  },
+  "sys": {
+    "type": "Entry",
+    "id": "19SwGLsYEzvGY9P1RnjqSZ",
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "opxulaoc9o1m"
+      }
+    },
+    "environment": {
+      "sys": {
+        "id": "master",
+        "type": "Link",
+        "linkType": "Environment"
+      }
+    },
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "property"
+      }
+    },
+    "createdBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "73vGqGfZhOv4vkteuazpWw"
+      }
+    },
+    "updatedBy": {
+      "sys": {
+        "type": "Link",
+        "linkType": "User",
+        "id": "6ZOGNgK3dB8Cxnb6hc0vB4"
+      }
+    },
+    "revision": 2,
+    "createdAt": "2022-11-28T22:43:21.534Z",
+    "updatedAt": "2022-12-01T19:53:27.669Z"
+  },
+  "fields": {
+    "name": {
+      "en-US": "3500 S Clinton Avenue"
+    },
+    "streetAddress1": {
+      "en-US": "3500 S Clinton Avenue"
+    },
+    "city": {
+      "en-US": "South Plainfield"
+    },
+    "state": {
+      "en-US": "New Jersey"
+    },
+    "zipPostalCode": {
+      "en-US": "07080"
+    },
+    "country": {
+      "en-US": "USA"
+    },
+    "availabilityType": {
+      "en-US": "Sale & Lease"
+    },
+    "propertySubset": {
+      "en-US": "Stand Alone"
+    },
+    "propertyType": {
+      "en-US": "Industrial"
+    },
+    "industrialPropertySubtype": {
+      "en-US": "Warehouse/Distribution"
+    },
+    "buildingClass": {
+      "en-US": "Not Applicable"
+    },
+    "propertyTotalSf": {
+      "en-US": "33,628 SF"
+    },
+    "propertyLotSize": {
+      "en-US": "9.01 Acres"
+    },
+    "propertyNotes": {
+      "en-US": "3500 S Clinton Ave offers ±33,628 square feet of warehouse on 9.01 acres with a 1.5 acre paved, fenced yard. "
+    },
+    "propertyAdvantagesList": {
+      "en-US": "- Available Q1 2023\n- Located 1.6 miles from I-287\n- 2,728 SF office space"
+    },
+    "showRates": {
+      "en-US": false
+    },
+    "askingRate": {
+      "en-US": "Call for rates"
+    },
+    "zoning": {
+      "en-US": "M3"
+    },
+    "propertyContacts": {
+      "en-US": [
+        {
+          "sys": {
+            "type": "Link",
+            "linkType": "Entry",
+            "id": "5T4jRJugEXeyB3k5qOzODo"
+          }
+        },
+        {
+          "sys": {
+            "type": "Link",
+            "linkType": "Entry",
+            "id": "5xQp7NXlFs3JlOziIgC3b4"
+          }
+        }
+      ]
+    },
+    "propertyHeroImage": {
+      "en-US": {
+        "sys": {
+          "type": "Link",
+          "linkType": "Entry",
+          "id": "4qUUsvTnrRCMo7rGZzhUZt"
+        }
+      }
+    },
+    "propertyAttachments": {
+      "en-US": [
+        {
+          "sys": {
+            "type": "Link",
+            "linkType": "Asset",
+            "id": "64cEBBGZCzvgG2wWXhyXCZ"
+          }
+        }
+      ]
+    },
+    "propertyBuilding": {
+      "en-US": [
+        {
+          "sys": {
+            "type": "Link",
+            "linkType": "Entry",
+            "id": "46HeeNBKkbBjORScl3aNit"
+          }
+        }
+      ]
+    },
+    "slug": {
+      "en-US": "3500-s-clinton-avenue"
+    },
+    "address": {
+      "en-US": {
+        "sys": {
+          "type": "Link",
+          "linkType": "Entry",
+          "id": "1UcAv3bquQsUCAIUEo6vVy"
+        }
+      }
+    }
+  }
+}

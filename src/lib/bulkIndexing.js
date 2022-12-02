@@ -71,10 +71,12 @@ export const bulkIndexing = async ({
     const fieldMappings = mappings?.fieldMappings || {}
     const schema = collectionSchemas.find(schema => schema.name === collectionName)
     const { fields: schemaFields } = schema
-    const fieldTypes = getContentfulFieldTypes(contentTypes, contentTypeMappings)[collectionName]
+    const contentType = contentTypes.items.find(({ sys }) => sys.id === collectionName)
+    const fieldTypes = getContentfulFieldTypes(contentType)
 
     const promises = Object.entries(entities).map(async ([entryId, document]) => {
       const { fields } = document
+      const isBulk = true
       return await createDocument({
         entryId,
         schemaFields,
@@ -83,7 +85,7 @@ export const bulkIndexing = async ({
         locale,
         fieldMappings,
         fieldFormatters,
-        fieldMappersExtraArgs: [normalizedData.entities]
+        fieldMappersExtraArgs: [isBulk, normalizedData.entities]
       })
     })
     return [collectionName, await Promise.all(promises)]
