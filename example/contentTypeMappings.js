@@ -9,8 +9,10 @@ export const contentTypeMappings = {
       spaceId,
       environmentName,
       locale,
-      payload
+      payload,
+      upsertEntry
     }) => {
+      if (!upsertEntry) return
       const space = await contentfulClient.getSpace(spaceId)
       const environment = await space.getEnvironment(environmentName)
       const buildingEntities = {
