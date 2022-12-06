@@ -43790,7 +43790,14 @@ const getSchemaFieldTypes = (schemaFields, fieldsFilter = defaultFieldsFilter) =
   return [name, type]
 }))
 
-const getContentfulFieldTypes = (contentTypes, contentTypeMappings) => {
+const getContentfulFieldTypes = ({ fields }) => {
+  return Object.fromEntries(fields.filter(defaultFieldsFilter).map(field => {
+    const { type, id: name } = field
+    return [name, type]
+  }))
+}
+
+const getAllMappedContentfulFieldTypes = (contentTypes, contentTypeMappings) => {
   return Object.fromEntries(contentTypes.items
     .filter(({ sys }) => Object.keys(contentTypeMappings).includes(sys.id))
     .map(({ sys, fields }) => {
@@ -43858,7 +43865,6 @@ const createDocument = async ({
     id: entryId,
     ...await schemaFields.reduce(async (documentFields, schemaField) => {
       const { name } = schemaField
-      // if (name === 'buildingLocation') console.log(fields[name], fields[name] !== undefined, fieldTypes[name], fieldFormatters[fieldTypes[name]])
       if (fieldMappings[name] !== undefined) {
         return {
           ...await documentFields,
@@ -43949,10 +43955,12 @@ const bulkIndexing = async ({
     const fieldMappings = mappings?.fieldMappings || {}
     const schema = collectionSchemas.find(schema => schema.name === collectionName)
     const { fields: schemaFields } = schema
-    const fieldTypes = getContentfulFieldTypes(contentTypes, contentTypeMappings)[collectionName]
+    const contentType = contentTypes.items.find(({ sys }) => sys.id === collectionName)
+    const fieldTypes = getContentfulFieldTypes(contentType)
 
     const promises = Object.entries(entities).map(async ([entryId, document]) => {
       const { fields } = document
+      const isBulk = true
       return await createDocument({
         entryId,
         schemaFields,
@@ -43961,7 +43969,7 @@ const bulkIndexing = async ({
         locale,
         fieldMappings,
         fieldFormatters: fieldFormatters,
-        fieldMappersExtraArgs: [normalizedData.entities]
+        fieldMappersExtraArgs: [isBulk, normalizedData.entities]
       })
     })
     return [collectionName, await Promise.all(promises)]
@@ -43992,6 +44000,8 @@ const dropAndCreateCollections = async ({
   const environment = await getContentfulEnvironment(contentfulClient, spaceId, environmentName)
   const contentTypes = await environment.getContentTypes()
   const collectionSchemas = await getCollections(contentTypes, contentTypeMappings)
+
+  console.log(collectionSchemas, contentTypeMappings)
 
   for await (const collection of collectionSchemas) {
     const { name } = collection
@@ -44031,7 +44041,9 @@ const upsertDocument = async({
 
   const { fields: contentTypeFields } = contentType
   const schemaFields = getCollectionFields(contentTypeFields, extraFields)
-  const fieldTypes = getContentfulFieldTypes(contentTypes, contentTypeMappings)[collectionName]
+  const fieldTypes = getContentfulFieldTypes(contentType)
+
+  const isBulk = false
 
   const document = await createDocument({
     entryId,
@@ -44040,7 +44052,8 @@ const upsertDocument = async({
     fieldTypes,
     locale,
     fieldMappings,
-    fieldFormatters: fieldFormatters
+    fieldFormatters: fieldFormatters,
+    fieldMappersExtraArgs: [isBulk, environment]
   })
 
   typesenseClient
@@ -44093,6 +44106,7 @@ const run = async ({
     const typesenseAction = core.getInput('typesenseAction')
 
     if (typesenseAction === 'dropAndCreateCollections') {
+      core.info(`Running drop and create collections`)
       await runDropAndCreateCollections({
         contentfulClient,
         typesenseClient,
@@ -44182,6 +44196,29 @@ const run = async ({
           payload
         })
       }
+
+      const { webhookHandler } = contentTypeMappings[contentTypeId]
+      if (typeof webhookHandler === 'function') {
+        core.info(`Running repo-defined webhookHandler for '${contentTypeId}'`)
+        await webhookHandler({
+          contentfulClient,
+          typesenseClient,
+          locale,
+          spaceId,
+          environmentName,
+          includeDrafts,
+          contentTypeMappings,
+          payload,
+          entryId: id,
+          topic,
+          isDraft,
+          isChanged,
+          isPublished,
+          upsertEntry,
+          deleteEntry
+        })
+      }
+
     } else {
       core.info(`Content type '${contentTypeId}' not mapped for indexing`)
     }

@@ -27,6 +27,7 @@ export const run = async ({
     const typesenseAction = core.getInput('typesenseAction')
 
     if (typesenseAction === 'dropAndCreateCollections') {
+      core.info(`Running drop and create collections`)
       await runDropAndCreateCollections({
         contentfulClient,
         typesenseClient,
