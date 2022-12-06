@@ -25,14 +25,15 @@ const typesenseClient = new Typesense.Client({
 })
 
 ;(async () => {
-  const context = JSON.parse(await fs.readFile('./runnerContext.json', 'utf8'))
+  const context = JSON.parse(await fs.readFile('./runnerContextWorkflowDispatch.json', 'utf8'))
   const github = { context }
 
   const getInput = sinon.stub()
   getInput.withArgs('locale').returns('en-US')
   getInput.withArgs('contentfulSpaceId').returns('opxulaoc9o1m')
   getInput.withArgs('contentfulEnvironment').returns('master')
-  getInput.withArgs('contentManagementToken').returns(managementToken)
+  getInput.withArgs('contentfulEnvironment').returns('master')
+  getInput.withArgs('typesenseAction').returns('dropAndCreateCollections')
   const core = { getInput, info: msg => console.log(msg) }
 
   await run({
