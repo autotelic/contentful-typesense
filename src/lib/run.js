@@ -38,6 +38,7 @@ export const run = async ({
     }
 
     if (typesenseAction === 'bulkIndexing') {
+      core.info(`Running bulk indexing`)
       await runBulkIndexing({
         contentfulClient,
         typesenseClient,

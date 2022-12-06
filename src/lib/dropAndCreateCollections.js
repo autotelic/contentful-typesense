@@ -15,8 +15,6 @@ export const dropAndCreateCollections = async ({
   const contentTypes = await environment.getContentTypes()
   const collectionSchemas = await getCollections(contentTypes, contentTypeMappings)
 
-  console.log(collectionSchemas, contentTypeMappings)
-
   for await (const collection of collectionSchemas) {
     const { name } = collection
     try {

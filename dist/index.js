@@ -44001,8 +44001,6 @@ const dropAndCreateCollections = async ({
   const contentTypes = await environment.getContentTypes()
   const collectionSchemas = await getCollections(contentTypes, contentTypeMappings)
 
-  console.log(collectionSchemas, contentTypeMappings)
-
   for await (const collection of collectionSchemas) {
     const { name } = collection
     try {
@@ -44117,6 +44115,7 @@ const run = async ({
     }
 
     if (typesenseAction === 'bulkIndexing') {
+      core.info(`Running bulk indexing`)
       await runBulkIndexing({
         contentfulClient,
         typesenseClient,
