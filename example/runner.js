@@ -32,7 +32,6 @@ const typesenseClient = new Typesense.Client({
   getInput.withArgs('locale').returns('en-US')
   getInput.withArgs('contentfulSpaceId').returns('opxulaoc9o1m')
   getInput.withArgs('contentfulEnvironment').returns('master')
-  getInput.withArgs('contentfulEnvironment').returns('master')
   getInput.withArgs('typesenseAction').returns('dropAndCreateCollections')
   const core = { getInput, info: msg => console.log(msg) }
 
