@@ -21,6 +21,7 @@ program
   .option('-t, --typesense-url <typesense url>', 'Typesense url')
 
 ;(async function () {
+  console.log(program)
   await program.parseAsync(process.argv)
 
   const options = program.opts()
@@ -34,6 +35,8 @@ program
     includeDrafts,
     locale
   } = options
+
+  console.log(options)
 
   const require = createRequire(import.meta.url)
   const contentTypeMappings = require(resolve(process.cwd(), mappingsPath))
