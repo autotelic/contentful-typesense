@@ -14,11 +14,9 @@ const program = new Command()
 program
   .option('-m, --mappings-path <mappings path>', 'Content type mappings')
   .option('-l, --locale <locale>', 'Contentful locale')
-  .option('-s, --space-id <space-id>', 'Contentful space id')
   .option('-e, --environment-name <env>', 'Contentful environment')
   .option('-a, --typesense-action <action>', 'Action')
   .option('-i, --include-drafts', 'Include drafts (boolean)')
-  .option('-t, --typesense-url <typesense url>', 'Typesense url')
 
 ;(async function () {
   await program.parseAsync(process.argv)
@@ -27,8 +25,6 @@ program
 
   const {
     mappingsPath,
-    typesenseUrl,
-    spaceId,
     environmentName,
     typesenseAction,
     includeDrafts,
@@ -39,6 +35,7 @@ program
   const contentTypeMappings = require(resolve(process.cwd(), mappingsPath))
 
   const managementToken = process.env.CONTENFUL_CMA_KEY
+  const spaceId = process.env.CONTENTFUL_SPACE_ID
 
   const contentfulClient = contentful.createClient({
     accessToken: managementToken
@@ -47,7 +44,7 @@ program
   const typesenseClient = new Typesense.Client({
     nodes: [
       {
-        url: typesenseUrl
+        url: process.env.TYPESENSE_URL
       }
     ],
     apiKey: process.env.TYPESENSE_ADMIN_API_KEY,
