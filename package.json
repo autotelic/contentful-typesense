@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "test": "c8 --100 ava",
-    "build": "ncc build -a -s -o dist src/action.js --license licenses.txt"
+    "build": "rm -rf dist && ncc build -a -s -o dist src/action.js --license licenses.txt"
   },
   "repository": {
     "type": "git",
