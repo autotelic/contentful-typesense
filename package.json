@@ -6,7 +6,6 @@
   "bin": {
     "contentful-typesense": "./bin/index.js"
   },
-  "type": "module",
   "scripts": {
     "test": "c8 --100 ava",
     "build": "ncc build -a -s -o dist src/action.js --license licenses.txt"
