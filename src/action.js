@@ -24,9 +24,9 @@ const typesenseClient = new Typesense.Client({
 })
 
 ;(async () => {
-  console.log(path.join(import.meta.url, contentTypeMappingsPath))
   try {
     const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
+    console.log(path.join(import.meta.url, contentTypeMappingsPath))
     // const fauxRequire = createRequire(import.meta.url)
     // const contentTypeMappings = fauxRequire(contentTypeMappingsPath)
     const contentTypeMappings = await import(path.join(import.meta.url, contentTypeMappingsPath))
