@@ -1,8 +1,9 @@
-import { createRequire } from 'node:module'
+// import { createRequire } from 'node:module'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import contentful from 'contentful-management'
 import Typesense from 'typesense'
+import path from 'node:path'
 
 import { run } from './lib/run.js'
 

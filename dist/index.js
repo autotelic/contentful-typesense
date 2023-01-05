@@ -43772,8 +43772,6 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 
-;// CONCATENATED MODULE: external "node:module"
-const external_node_module_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:module");
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
 var core_namespaceObject = /*#__PURE__*/__nccwpck_require__.t(core, 2);
@@ -43784,6 +43782,8 @@ var github_namespaceObject = /*#__PURE__*/__nccwpck_require__.t(github, 2);
 var contentful_management_node = __nccwpck_require__(9839);
 // EXTERNAL MODULE: ./node_modules/typesense/lib/Typesense.js
 var Typesense = __nccwpck_require__(7235);
+;// CONCATENATED MODULE: external "node:path"
+const external_node_path_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:path");
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(7147);
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
@@ -44244,6 +44244,7 @@ const run = async ({
 }
 
 ;// CONCATENATED MODULE: ./src/action.js
+// import { createRequire } from 'node:module'
 
 
 
@@ -44269,12 +44270,12 @@ const typesenseClient = new Typesense.Client({
 })
 
 ;(async () => {
-  console.log(path.join("file:///Users/alexhauka/autotelic-forks/contentful-typesense/src/action.js", contentTypeMappingsPath))
+  console.log(external_node_path_namespaceObject.join("file:///Users/alexhauka/autotelic-forks/contentful-typesense/src/action.js", contentTypeMappingsPath))
   try {
     const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
     // const fauxRequire = createRequire(import.meta.url)
     // const contentTypeMappings = fauxRequire(contentTypeMappingsPath)
-    const contentTypeMappings = await __nccwpck_require__(6925)(path.join("file:///Users/alexhauka/autotelic-forks/contentful-typesense/src/action.js", contentTypeMappingsPath))
+    const contentTypeMappings = await __nccwpck_require__(6925)(external_node_path_namespaceObject.join("file:///Users/alexhauka/autotelic-forks/contentful-typesense/src/action.js", contentTypeMappingsPath))
     await run({ core: core_namespaceObject, github: github_namespaceObject, contentfulClient, typesenseClient, contentTypeMappings })
   } catch (error) {
     core.setFailed(error.message)
