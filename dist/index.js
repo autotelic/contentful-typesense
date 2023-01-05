@@ -44270,9 +44270,9 @@ const typesenseClient = new Typesense.Client({
 })
 
 ;(async () => {
-  console.log(external_node_path_namespaceObject.join("file:///Users/alexhauka/autotelic-forks/contentful-typesense/src/action.js", contentTypeMappingsPath))
   try {
     const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
+    console.log(external_node_path_namespaceObject.join("file:///Users/alexhauka/autotelic-forks/contentful-typesense/src/action.js", contentTypeMappingsPath))
     // const fauxRequire = createRequire(import.meta.url)
     // const contentTypeMappings = fauxRequire(contentTypeMappingsPath)
     const contentTypeMappings = await __nccwpck_require__(6925)(external_node_path_namespaceObject.join("file:///Users/alexhauka/autotelic-forks/contentful-typesense/src/action.js", contentTypeMappingsPath))
