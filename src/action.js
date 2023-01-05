@@ -23,10 +23,12 @@ const typesenseClient = new Typesense.Client({
 })
 
 ;(async () => {
+  console.log(path.join(import.meta.url, contentTypeMappingsPath))
   try {
     const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
-    const fauxRequire = createRequire(import.meta.url)
-    const contentTypeMappings = fauxRequire(contentTypeMappingsPath)
+    // const fauxRequire = createRequire(import.meta.url)
+    // const contentTypeMappings = fauxRequire(contentTypeMappingsPath)
+    const contentTypeMappings = await import(path.join(import.meta.url, contentTypeMappingsPath))
     await run({ core, github, contentfulClient, typesenseClient, contentTypeMappings })
   } catch (error) {
     core.setFailed(error.message)

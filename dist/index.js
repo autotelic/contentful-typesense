@@ -43513,6 +43513,25 @@ module.exports = eval("require")("encoding");
 
 /***/ }),
 
+/***/ 6925:
+/***/ ((module) => {
+
+function webpackEmptyAsyncContext(req) {
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncaught exception popping up in devtools
+	return Promise.resolve().then(() => {
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	});
+}
+webpackEmptyAsyncContext.keys = () => ([]);
+webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
+webpackEmptyAsyncContext.id = 6925;
+module.exports = webpackEmptyAsyncContext;
+
+/***/ }),
+
 /***/ 9491:
 /***/ ((module) => {
 
@@ -44250,10 +44269,12 @@ const typesenseClient = new Typesense.Client({
 })
 
 ;(async () => {
+  console.log(path.join("file:///Users/alexhauka/autotelic-forks/contentful-typesense/src/action.js", contentTypeMappingsPath))
   try {
     const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
-    const fauxRequire = (0,external_node_module_namespaceObject.createRequire)("file:///Users/alexhauka/autotelic-forks/contentful-typesense/src/action.js")
-    const contentTypeMappings = fauxRequire(contentTypeMappingsPath)
+    // const fauxRequire = createRequire(import.meta.url)
+    // const contentTypeMappings = fauxRequire(contentTypeMappingsPath)
+    const contentTypeMappings = await __nccwpck_require__(6925)(path.join("file:///Users/alexhauka/autotelic-forks/contentful-typesense/src/action.js", contentTypeMappingsPath))
     await run({ core: core_namespaceObject, github: github_namespaceObject, contentfulClient, typesenseClient, contentTypeMappings })
   } catch (error) {
     core.setFailed(error.message)
