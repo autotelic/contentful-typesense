@@ -1,9 +1,8 @@
-// import { createRequire } from 'node:module'
+import { createRequire } from 'node:module'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import contentful from 'contentful-management'
 import Typesense from 'typesense'
-import path from 'node:path'
 
 import { run } from './lib/run.js'
 
@@ -26,10 +25,8 @@ const typesenseClient = new Typesense.Client({
 ;(async () => {
   try {
     const contentTypeMappingsPath = core.getInput('contentTypeMappingsPath')
-    console.log(path.join(import.meta.url, contentTypeMappingsPath))
-    // const fauxRequire = createRequire(import.meta.url)
-    // const contentTypeMappings = fauxRequire(contentTypeMappingsPath)
-    const contentTypeMappings = await import(path.join(import.meta.url, contentTypeMappingsPath))
+    const fauxRequire = createRequire(import.meta.url)
+    const contentTypeMappings = fauxRequire(contentTypeMappingsPath)
     await run({ core, github, contentfulClient, typesenseClient, contentTypeMappings })
   } catch (error) {
     core.setFailed(error.message)
