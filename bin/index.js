@@ -34,7 +34,7 @@ program
   const require = createRequire(import.meta.url)
   const contentTypeMappings = require(resolve(process.cwd(), mappingsPath))
 
-  const managementToken = process.env.CONTENFUL_CMA_KEY
+  const managementToken = process.env.CONTENTFUL_CMA_KEY
   const spaceId = process.env.CONTENTFUL_SPACE_ID
 
   const contentfulClient = contentful.createClient({

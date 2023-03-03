@@ -5,7 +5,7 @@ import Typesense from 'typesense'
 import { upsertDocument } from '../src/lib/upsertDocument.js'
 import { contentTypeMappings } from './contentTypeMappings.js'
 
-const managementToken = process.env.CONTENFUL_CMA_KEY
+const managementToken = process.env.CONTENTFUL_CMA_KEY
 
 const contentfulClient = contentful.createClient({
   accessToken: managementToken

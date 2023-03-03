@@ -18,7 +18,7 @@ jobs:
         id: act-repl
         uses: ./
         with:
-          contentManagementToken: ${{ secrets.CONTENFUL_CMA_KEY }}
+          contentManagementToken: ${{ secrets.CONTENTFUL_CMA_KEY }}
           typesenseAdminApiKey: ${{ secrets.TYPESENSE_ADMIN_API_KEY }}
           contentfulSpaceId: opxulaoc9o1m
           typesenseAction: dropAndCreateCollections
