@@ -27,7 +27,7 @@ program
     mappingsPath,
     environmentName,
     typesenseAction,
-    includeDrafts,
+    includeDrafts = false,
     locale
   } = options
 
