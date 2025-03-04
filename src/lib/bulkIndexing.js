@@ -41,7 +41,7 @@ export const bulkIndexing = async ({
   managementToken,
   environmentName,
   contentTypeMappings,
-  includeDrafts = true,
+  includeDrafts,
   getContentfulExportData = getContentfulExportDataDefault,
   getContentfulEnvironment = getEnvironment
 }) => {
